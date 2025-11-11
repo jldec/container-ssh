@@ -7,7 +7,7 @@ Deployed at https://container-demo-terminal.jldec.workers.dev
 
 
 ### To run locally using wrangler
-Wrangler will build a new image targeting linux/amd64. Open in your browser at https://localhost:8787
+Ensure that Docker Desktop is running. Wrangler will build a new image targeting linux/amd64. Open in your browser at https://localhost:8787
 ```sh
 pnpm dev
 ```
