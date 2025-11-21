@@ -1,7 +1,7 @@
 # container-demo-terminal
 Minimal demo of a Cloudflare Container using [tty2web](https://github.com/kost/tty2web) to serve a terminal in a browser.
 
-Deployed at https://container-demo-terminal.jldec.workers.dev
+Deployed at https://container-demo-terminal.jldec.workers.dev (now with Cloudflare Access protection)
 
 ![container-demo-terminal](https://github.com/user-attachments/assets/512aad79-04ba-43d2-8fd0-7fe04fa388fe)
 
