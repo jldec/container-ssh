@@ -1,5 +1,5 @@
 {
-  "name": "container-demo-terminal",
+  "name": "container-ssh",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -9,14 +9,14 @@
     "format": "prettier --write .",
     "types": "wrangler types --include-runtime false --strict-vars false",
     "tail": "wrangler tail",
-    "image:build": "docker build --platform linux/amd64 -t container-demo-terminal .",
-    "image:run": "docker run --rm -p 8080:8080 container-demo-terminal"
+    "image:build": "docker build --platform linux/amd64 -t container-ssh .",
+    "image:run": "docker run --env-file .env --rm -p 22:22 container-ssh"
   },
   "devDependencies": {
     "@cloudflare/containers": "^0.0.30",
-    "@cloudflare/workers-types": "^4.20251106.1",
+    "@cloudflare/workers-types": "^4.20251121.0",
     "typescript": "^5.9.3",
-    "wrangler": "^4.46.0"
+    "wrangler": "^4.50.0"
   },
   "prettier": {
     "printWidth": 100,

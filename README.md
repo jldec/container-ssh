@@ -1,13 +1,12 @@
-# container-demo-terminal
-Minimal demo of a Cloudflare Container using [tty2web](https://github.com/kost/tty2web) to serve a terminal in a browser.
+# container-ssh
+Minimal demo of a Cloudflare Container with ssh access via a Cloudflare tunnel.
 
-Deployed at https://container-demo-terminal.jldec.workers.dev (now with Cloudflare Access protection)
 
-![container-demo-terminal](https://github.com/user-attachments/assets/512aad79-04ba-43d2-8fd0-7fe04fa388fe)
+
 
 
 ### To run locally using wrangler
-Ensure that Docker Desktop is running. Wrangler will build a new image targeting linux/amd64. Open in your browser at https://localhost:8787
+Ensure that Docker Desktop is running. Wrangler will build a new image targeting linux/amd64.
 ```sh
 pnpm dev
 ```
@@ -19,7 +18,7 @@ pnpm ship
 ```
 
 ### To run the container
-This builds a linux/amd64 docker image called `container-demo-terminal`.  
+This builds a linux/amd64 docker image called `container-ssh`.  
 Docker Desktop on macOS with apple silicon can run x86 containers using rosetta emulation.
 ```sh
 pnpm image:build

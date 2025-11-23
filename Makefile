@@ -1,7 +1,7 @@
 .PHONY: build run
 
 build:
-	docker build --platform linux/amd64 -t container-demo-terminal .
+	docker build --platform linux/amd64 -t container-ssh .
 
 run:
-	docker run --rm -p 8080:8080 container-demo-terminal
+	docker run --env-file .env --rm -p 22:22 container-ssh
