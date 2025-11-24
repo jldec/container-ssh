@@ -1,48 +1,38 @@
-import { env } from 'cloudflare:workers'
-import { DurableObject } from "cloudflare:workers"
+import { Container } from '@cloudflare/containers'
 
 const containerID = 'container-id'
 
-// https://developers.cloudflare.com/durable-objects/api/container/
-export class ContainerClass extends DurableObject {
+// https://developers.cloudflare.com/containers/container-package/
+export class ContainerClass extends Container<Env> {
+  defaultPort = 3000
+  sleepAfter = '20m'
 
-  async start() {
-    if (this.ctx.container?.running) return 'already running'
-    this.ctx.container?.start({
-      env: {
-        CF_TUNNEL: env.CF_TUNNEL
-      },
-      enableInternet: true
-    })
-    this.ctx.container?.monitor().then(() => {
-      console.log("Container started")
-    }).catch((err) => {
-      console.error("Container monitor error", err)
-    })
-    return 'starting'
+  envVars = {
+    CF_TUNNEL: this.env.CF_TUNNEL
   }
 
-  async destroy() {
-    await this.ctx.container?.destroy()
+  override async onStart() {
+    console.log('Container started')
+  }
+
+  override async onStop() {
+    console.log('Container stopped')
   }
 }
 
 export default {
   async fetch(req: Request, env: Env) {
     const url = new URL(req.url)
-    if (url.pathname == '/') {
-      return new Response('use /start or /destroy')
+
+    if (url.pathname === '/') {
+      return new Response('container-ssh: use /hello to access the bun server')
     }
-    if (url.pathname === '/start') {
+
+    if (url.pathname === '/hello') {
       const container = env.CONTAINER_DO.getByName(containerID)
-      const status = await container.start()
-      return new Response(`container-ssh ${status}`)
+      return container.fetch(req)
     }
-    if (url.pathname === '/destroy') {
-      const container = env.CONTAINER_DO.getByName(containerID)
-      await container.destroy()
-      return new Response('container-ssh destroyed')
-    }
+
     return new Response('not found', { status: 404 })
   }
 }
