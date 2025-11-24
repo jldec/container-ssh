@@ -3,26 +3,25 @@ import { DurableObject } from "cloudflare:workers"
 
 const containerID = 'container-id'
 
-function onContainerExit() {
-  console.log("Container exited");
-}
-
-// the "err" value can be customized by the destroy() method
-async function onContainerError(err:any) {
-  console.log("Container errored", err);
-}
-
 // https://developers.cloudflare.com/durable-objects/api/container/
 export class ContainerClass extends DurableObject {
+
   async start() {
+    if (this.ctx.container?.running) return 'already running'
     this.ctx.container?.start({
       env: {
         CF_TUNNEL: env.CF_TUNNEL
       },
       enableInternet: true
     })
-    this.ctx.container?.monitor().then(onContainerExit).catch(onContainerError)
+    this.ctx.container?.monitor().then(() => {
+      console.log("Container started")
+    }).catch((err) => {
+      console.error("Container monitor error", err)
+    })
+    return 'starting'
   }
+
   async destroy() {
     await this.ctx.container?.destroy()
   }
@@ -36,8 +35,8 @@ export default {
     }
     if (url.pathname === '/start') {
       const container = env.CONTAINER_DO.getByName(containerID)
-      await container.start()
-      return new Response('container-ssh started')
+      const status = await container.start()
+      return new Response(`container-ssh ${status}`)
     }
     if (url.pathname === '/destroy') {
       const container = env.CONTAINER_DO.getByName(containerID)
