@@ -11,19 +11,17 @@ This is a barebones demo of a Cloudflare Container with ssh access via a Cloudfl
 ### Issues
 The implementation works as a proof of concept, however several issues remain.
 
-1. When deployed on Cloudflare, establishing QUIC outbound tunnels does not work reliably.
-1. The container shuts down a minute after starting (not using @cloudflare/containers to keep alive)
-1. Running the WARP client is convenient to connect to the private address on Cloudflare, but it prevents outbound QUIC tunnels from working when testing the container locally.
+1. When deployed on Cloudflare, establishing QUIC outbound tunnels does not work reliably. See https://github.com/jldec/container-ssh/issues/1
+1. The container shuts down a minute after starting. I initially avoided using @cloudflare/containers which can keep the container alive, because there is no HTTP server in this container to serve as a liveness probe. This should be easily fixed.
 
 ### Hosted setup (with WARP)
-1. Clone this repo, rename the worker in wrangler.jsonc if necessary
-1. Copy your public key into the repo as pk.pub
-1. Create a cloudflared tunnel in the Cloudflare dashboard and grab the tunnel token (the part after `cloudflared tunnel run --token`)
-1. Run `wrangler secret put CF_TUNNEL` and paste the tunnel token
-1. Configure both the tunnel and the WARP profile with CIDR 10.0.0.0/8.
-   The WARP profile now lives in the Zero Trust dashboard under Team & Resources > Devices > Device Profiles > Default Profile ... Configure.
-1. Run `wranger deploy` to build the container and deploy it to Cloudflare
-1. Add an entry to ~/.ssh/config for the container
+- Clone this repo, rename the worker in wrangler.jsonc if necessary
+- Copy your public key into the repo as pk.pub
+- Create a cloudflared tunnel in the Cloudflare dashboard and grab the tunnel token (the part after `cloudflared tunnel run --token`)
+- Run `wrangler secret put CF_TUNNEL` and paste the tunnel token
+- Configure both the tunnel and the WARP profile with CIDR 10.0.0.0/8. NOTE: the WARP profile now lives in the Zero Trust dashboard under Team & Resources > Devices > Device Profiles > Default Profile ... Configure.
+- Run `wranger deploy` to build the container and deploy it to Cloudflare
+- Add an entry to ~/.ssh/config for the container
   ```
   Host container-ssh
       HostName 10.0.0.1
@@ -31,17 +29,19 @@ The implementation works as a proof of concept, however several issues remain.
       IdentityFile ~/.ssh/{your-private-key}.pem
       SetEnv TERM=xterm-256color
   ```
-1. Start the container at https://container-ssh.{your-subdomain}.workers.dev/start
-1. Connect to the container using `ssh container-ssh`
-1. Shut down the container at  https://container-ssh.{your-subdomain}.workers.dev/destroy
+- Start the container at https://container-ssh.{your-subdomain}.workers.dev/start
+- Connect to the container using `ssh container-ssh`
+- Shut down the container at  https://container-ssh.{your-subdomain}.workers.dev/destroy
+ 
+<img width="2286" height="828" alt="Screenshot 2025-11-24 at 08 53 33" src="https://github.com/user-attachments/assets/f6b6314c-8aff-4462-8f67-01803a38c89c" />
 
 ### Local dev setup (without WARP)
-1. Create a different tunnel in the Cloudflare dashboard and grab the new tunnel token
-1. Configure the tunnel with a published application route (DNS hostname) pointing to `tcp://localhost:22`
-1. Add `CF_TUNNEL={tunnel-token}` in .env
-1. Run `wrangler dev` to build the container and run the local worker
-1. Start a TCP proxy with `cloudflared access tcp --hostname {your-fqdn} --url tcp://localhost:2222`
-1. Add an entry to ~/.ssh/config for the container
+- Create a different tunnel in the Cloudflare dashboard and grab the new tunnel token
+- Configure the tunnel with a published application route (DNS hostname) pointing to `tcp://localhost:22`
+- Add `CF_TUNNEL={tunnel-token}` in .env
+- Run `wrangler dev` to build the container and run the local worker
+- Start a TCP proxy with `cloudflared access tcp --hostname {your-fqdn} --url tcp://localhost:2222`
+- Add an entry to ~/.ssh/config for the container
   ```
   Host container-ssh-local
       HostName localhost
@@ -50,8 +50,8 @@ The implementation works as a proof of concept, however several issues remain.
       IdentityFile ~/.ssh/{your-private-key}.pem
       SetEnv TERM=xterm-256color
   ```
-1. Start the container at https://localhost:8787/start
-1. Connect to the container using `ssh container-ssh-local`
-1. Shut down the container at  https://localhost:8787/destroy
+- Start the container at https://localhost:8787/start
+- Connect to the container using `ssh container-ssh-local`
+- Shut down the container at  https://localhost:8787/destroy
 
-
+<img width="2280" height="824" alt="Screenshot 2025-11-24 at 08 54 59" src="https://github.com/user-attachments/assets/3b4915aa-caf4-4539-bbbc-2307357e59f2" />
