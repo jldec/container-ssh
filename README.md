@@ -9,10 +9,7 @@ This is a barebones demo of a Cloudflare Container with ssh access via a Cloudfl
 - ~/.ssh/config points to the same address, and uses the private key for authentication
 
 ### Issues
-The implementation works as a proof of concept, however several issues remain.
-
-1. When deployed on Cloudflare, establishing QUIC outbound tunnels does not work reliably. See https://github.com/jldec/container-ssh/issues/1
-1. The container shuts down a minute after starting. I initially avoided using @cloudflare/containers which can keep the container alive, because there is no HTTP server in this container to serve as a liveness probe. This should be easily fixed.
+The implementation works as a proof of concept, however when deployed on Cloudflare, establishing QUIC outbound tunnels does not work reliably. See https://github.com/jldec/container-ssh/issues/1
 
 ### Hosted setup (with WARP)
 - Clone this repo, rename the worker in wrangler.jsonc if necessary
@@ -29,9 +26,9 @@ The implementation works as a proof of concept, however several issues remain.
       IdentityFile ~/.ssh/{your-private-key}.pem
       SetEnv TERM=xterm-256color
   ```
-- Start the container at https://container-ssh.{your-subdomain}.workers.dev/start
 - Connect to the container using `ssh container-ssh`
-- Shut down the container at  https://container-ssh.{your-subdomain}.workers.dev/destroy
+- Browse to https://container-ssh.{your-subdomain}.workers.dev/hello to check the Bun server in the container.
+- The container should run for 20 minutes
  
 <img width="2286" height="828" alt="Screenshot 2025-11-24 at 08 53 33" src="https://github.com/user-attachments/assets/f6b6314c-8aff-4462-8f67-01803a38c89c" />
 
@@ -50,8 +47,7 @@ The implementation works as a proof of concept, however several issues remain.
       IdentityFile ~/.ssh/{your-private-key}.pem
       SetEnv TERM=xterm-256color
   ```
-- Start the container at https://localhost:8787/start
 - Connect to the container using `ssh container-ssh-local`
-- Shut down the container at  https://localhost:8787/destroy
+- Browse to https://localhost:8787/hello to check the Bun server in the container.
 
 <img width="2280" height="824" alt="Screenshot 2025-11-24 at 08 54 59" src="https://github.com/user-attachments/assets/3b4915aa-caf4-4539-bbbc-2307357e59f2" />

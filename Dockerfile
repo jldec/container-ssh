@@ -91,6 +91,6 @@ ENV CF_TUNNEL=""
 ENV TERM=xterm-256color
 
 # Change this for force a new image
-ENV IMAGE_VERSION=0.0.1
+ENV IMAGE_VERSION=0.0.2
 
 ENTRYPOINT ["/entrypoint.sh"]
