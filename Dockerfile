@@ -55,6 +55,7 @@ RUN echo '#!/bin/bash\n\
 set -e\n\
 \n\
 # Start sshd\n\
+mkdir -p /var/run/sshd\n\
 /usr/sbin/sshd\n\
 \n\
 # Run cloudflared tunnel\n\
