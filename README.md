@@ -33,6 +33,7 @@ The implementation works as a proof of concept, however when deployed on Cloudfl
 <img width="2286" height="828" alt="Screenshot 2025-11-24 at 08 53 33" src="https://github.com/user-attachments/assets/f6b6314c-8aff-4462-8f67-01803a38c89c" />
 
 ### Local dev setup (without WARP)
+- _NOTE: the WARP setup above should also work for localhost using IP 172.17.0.2 instead of 10.0.0.1_
 - Create a different tunnel in the Cloudflare dashboard and grab the new tunnel token
 - Configure the tunnel with a published application route (DNS hostname) pointing to `tcp://localhost:22`
 - Add `CF_TUNNEL={tunnel-token}` in .env
