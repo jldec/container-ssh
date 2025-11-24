@@ -42,8 +42,6 @@ RUN chmod 600 /home/user/.ssh/authorized_keys && \
 
 # Configure sshd
 RUN mkdir -p /var/run/sshd && \
-    mkdir -p /run && \
-    ln -sf /var/run/sshd /run/sshd && \
     sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config && \
     sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config && \
     sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config && \
@@ -55,11 +53,6 @@ RUN ssh-keygen -A
 # Create entrypoint script
 RUN echo '#!/bin/bash\n\
 set -e\n\
-\n\
-# Ensure privilege separation directory and symlink exist\n\
-mkdir -p /var/run/sshd\n\
-mkdir -p /run\n\
-ln -sf /var/run/sshd /run/sshd\n\
 \n\
 # Start sshd\n\
 /usr/sbin/sshd\n\
