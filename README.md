@@ -2,9 +2,10 @@
 This is a barebones demo of a Cloudflare Container with ssh access via a Cloudflare tunnel.
 
 ### How it works
-- A public key is included in the container image, built locally
-- The tunnel token is stored as secret and injected via $CF_TUNNEL
-- When running on Cloudflare, the container is accessible at 10.0.0.1
+- The container image is built locally, or automatically on push to GitHub.
+- The Dockerfile includes a public key, and starts bun, cloudflared, and sshd.
+- The tunnel token is stored as secret and injected as an env var CF_TUNNEL.
+- When running on Cloudflare, the container has IP address 10.0.0.1, locally 172.17.0.2
 - Both the tunnel and the WARP profile are configured with a CIDR in this range
 - ~/.ssh/config points to the same address, and uses the private key for authentication
 
