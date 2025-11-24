@@ -6,7 +6,7 @@ This is a barebones demo of a Cloudflare Container with ssh access via a Cloudfl
 - The tunnel token is stored as secret and injected via $CF_TUNNEL
 - When running on Cloudflare, the container is accessible at 10.0.0.1
 - Both the tunnel and the WARP profile are configured with a CIDR in this range
-- ~/.ssh/config points to the same address, and uses the privte key for authentication
+- ~/.ssh/config points to the same address, and uses the private key for authentication
 
 ### Issues
 The implementation works as a proof of concept, however several issues remain.
