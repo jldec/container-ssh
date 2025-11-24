@@ -25,12 +25,28 @@ export default {
     const url = new URL(req.url)
 
     if (url.pathname === '/') {
-      return new Response('container-ssh: use /hello to access the bun server')
+      return new Response(`container-ssh:
+==============
+/hello  fetches from bun running in the container.
+/status checks if the container is started.
+/stop   shuts down the container.
+`)
     }
 
     if (url.pathname === '/hello') {
       const container = env.CONTAINER_DO.getByName(containerID)
       return container.fetch(req)
+    }
+
+    if (url.pathname === '/status') {
+      const container = env.CONTAINER_DO.getByName(containerID)
+      return Response.json(await container.getState())
+    }
+
+    if (url.pathname === '/stop') {
+      const container = env.CONTAINER_DO.getByName(containerID)
+      await container.stop()
+      return Response.json(await container.getState())
     }
 
     return new Response('not found', { status: 404 })
