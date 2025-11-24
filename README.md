@@ -27,9 +27,14 @@ The implementation works as a proof of concept, however when deployed on Cloudfl
       SetEnv TERM=xterm-256color
   ```
 - Connect to the container using `ssh container-ssh`
-- Browse to https://container-ssh.{your-subdomain}.workers.dev/hello to check the Bun server in the container.
-- The container should run for 20 minutes
- 
+- Browse to https://container-ssh.{your-subdomain}.workers.dev/
+  ```
+  /hello  fetches from bun running in the container.
+  /status checks if the container is started.
+  /stop   shuts down the container.
+  ```
+- Turn on Cloudflare Access to protect the public endpoit from abuse. The container should run for at least 20 minutes.
+
 <img width="2286" height="828" alt="Screenshot 2025-11-24 at 08 53 33" src="https://github.com/user-attachments/assets/f6b6314c-8aff-4462-8f67-01803a38c89c" />
 
 ### Local dev setup (without WARP)
@@ -49,6 +54,6 @@ The implementation works as a proof of concept, however when deployed on Cloudfl
       SetEnv TERM=xterm-256color
   ```
 - Connect to the container using `ssh container-ssh-local`
-- Browse to https://localhost:8787/hello to check the Bun server in the container.
+- Browse to https://localhost:8787/ for the same HTTP routes as above.
 
 <img width="2280" height="824" alt="Screenshot 2025-11-24 at 08 54 59" src="https://github.com/user-attachments/assets/3b4915aa-caf4-4539-bbbc-2307357e59f2" />
