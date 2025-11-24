@@ -26,12 +26,12 @@ The implementation works as a proof of concept, however when deployed on Cloudfl
       IdentityFile ~/.ssh/{your-private-key}.pem
       SetEnv TERM=xterm-256color
   ```
-- Connect to the container using `ssh container-ssh`
+- Connect using `ssh container-ssh` after starting the container
 - Browse to https://container-ssh.{your-subdomain}.workers.dev/
   ```
-  /hello  fetches from bun running in the container.
-  /status checks if the container is started.
-  /stop   shuts down the container.
+  /hello  starts container and forwards request to bun
+  /status checks container state
+  /stop   shuts down the container
   ```
 - Turn on Cloudflare Access to protect the public endpoit from abuse. The container should run for at least 20 minutes.
 
@@ -53,7 +53,7 @@ The implementation works as a proof of concept, however when deployed on Cloudfl
       IdentityFile ~/.ssh/{your-private-key}.pem
       SetEnv TERM=xterm-256color
   ```
-- Connect to the container using `ssh container-ssh-local`
-- Browse to https://localhost:8787/ for the same HTTP routes as above.
+- Browse to https://localhost:8787/hello to start the container (same routes as above.)
+- Connect using `ssh container-ssh-local`
 
 <img width="2280" height="824" alt="Screenshot 2025-11-24 at 08 54 59" src="https://github.com/user-attachments/assets/3b4915aa-caf4-4539-bbbc-2307357e59f2" />
