@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     ca-certificates \
     gnupg \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
 # Add cloudflare gpg key
@@ -25,6 +26,11 @@ RUN echo 'deb [signed-by=/usr/share/keyrings/cloudflare-public-v2.gpg] https://p
 # Install cloudflared
 RUN apt-get update && apt-get install -y cloudflared && \
     rm -rf /var/lib/apt/lists/*
+
+# Install bun
+RUN curl -fsSL https://bun.sh/install | bash && \
+    cp /root/.bun/bin/bun /usr/local/bin/bun && \
+    chmod +x /usr/local/bin/bun
 
 # Example: create a normal user with sudo and login capability
 RUN groupadd -r user && \
@@ -39,6 +45,10 @@ RUN mkdir -p /home/user/.ssh && \
 COPY pk.pub /home/user/.ssh/authorized_keys
 RUN chmod 600 /home/user/.ssh/authorized_keys && \
     chown -R user:user /home/user/.ssh
+
+# Copy hello world bun server
+COPY hello-server.js /home/user/hello-server.js
+RUN chown user:user /home/user/hello-server.js
 
 # Configure sshd
 RUN mkdir -p /var/run/sshd && \
@@ -58,6 +68,10 @@ set -e\n\
 mkdir -p /var/run/sshd\n\
 /usr/sbin/sshd\n\
 \n\
+# Start bun server in background\n\
+echo "Starting Bun server..."\n\
+su - user -c "bun /home/user/hello-server.js" &\n\
+\n\
 # Run cloudflared tunnel\n\
 if [ -z "$CF_TUNNEL" ]; then\n\
     echo "Error: CF_TUNNEL environment variable is not set"\n\
@@ -67,8 +81,8 @@ fi\n\
 exec cloudflared tunnel run --token $CF_TUNNEL\n\
 ' > /entrypoint.sh && chmod +x /entrypoint.sh
 
-# Expose SSH port
-EXPOSE 22
+# Expose SSH and Bun server ports
+EXPOSE 22 3000
 
 # Set environment variable for tunnel token (will be provided at runtime)
 ENV CF_TUNNEL=""
