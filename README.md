@@ -12,6 +12,8 @@ This is a barebones demo of a Cloudflare Container with ssh access via a Cloudfl
 ### Issues
 The implementation works as a proof of concept, however when deployed on Cloudflare, establishing QUIC outbound tunnels does not work reliably. See https://github.com/jldec/container-ssh/issues/1
 
+Since ssh host keys are generated during the docker build, in the absence of build caching new certs will be created on each push. This is annoying because it results in WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED! each time you reconnect to the container after a fresh build. See https://github.com/jldec/container-ssh/issues/4
+
 ### Hosted setup (with WARP)
 - Clone this repo, rename the worker in wrangler.jsonc if necessary
 - Copy your public key into the repo as pk.pub
