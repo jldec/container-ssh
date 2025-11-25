@@ -1,14 +1,21 @@
+import { env } from 'cloudflare:workers'
 import { Container } from '@cloudflare/containers'
 
+// singleton durable object
 const containerID = 'container-id'
+const getContainerDO = () => env.CONTAINER_DO.getByName(containerID)
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+// container DO class
 // https://developers.cloudflare.com/containers/container-package/
-export class ContainerClass extends Container<Env> {
+// https://github.com/cloudflare/containers
+export class ContainerClass extends Container {
   defaultPort = 3000
   sleepAfter = '20m'
 
   envVars = {
-    CF_TUNNEL: this.env.CF_TUNNEL
+    CF_TUNNEL: env.CF_TUNNEL
   }
 
   override async onStart() {
@@ -20,6 +27,7 @@ export class ContainerClass extends Container<Env> {
   }
 }
 
+// worker entry point
 export default {
   async fetch(req: Request, env: Env) {
     const url = new URL(req.url)
@@ -34,18 +42,19 @@ export default {
     }
 
     if (url.pathname === '/hello') {
-      const container = env.CONTAINER_DO.getByName(containerID)
+      const container = getContainerDO()
       return container.fetch(req)
     }
 
     if (url.pathname === '/status') {
-      const container = env.CONTAINER_DO.getByName(containerID)
+      const container = getContainerDO()
       return Response.json(await container.getState())
     }
 
     if (url.pathname === '/stop') {
-      const container = env.CONTAINER_DO.getByName(containerID)
+      const container = getContainerDO()
       await container.stop()
+      await sleep(1000)
       return Response.json(await container.getState())
     }
 
