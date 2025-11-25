@@ -27,9 +27,9 @@ export default {
     if (url.pathname === '/') {
       return new Response(`container-ssh:
 ==============
-/hello  fetches from bun running in the container.
-/status checks if the container is started.
-/stop   shuts down the container.
+/hello  starts container and forwards request to bun
+/status checks container state
+/stop   shuts down the container
 `)
     }
 
