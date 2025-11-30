@@ -15,7 +15,8 @@ export class ContainerClass extends Container {
   sleepAfter = '20m'
 
   envVars = {
-    CF_TUNNEL: env.CF_TUNNEL
+    CF_TUNNEL: env.CF_TUNNEL,
+    CONTAINER_IP: '10.0.0.2'
   }
 
   override async onStart() {
@@ -33,11 +34,12 @@ export default {
     const url = new URL(req.url)
 
     if (url.pathname === '/') {
-      return new Response(`container-ssh:
+      return new Response(`container-ssh: (10.0.0.2)
 ==============
-/hello  starts container and forwards request to bun
-/status checks container state
-/stop   shuts down the container
+/hello   starts container and forwards request to bun
+/status  checks container state
+/stop    gracefully shuts down the container
+/destroy forecibly shuts down the container
 `)
     }
 
@@ -54,6 +56,13 @@ export default {
     if (url.pathname === '/stop') {
       const container = getContainerDO()
       await container.stop()
+      await sleep(1000)
+      return Response.json(await container.getState())
+    }
+
+    if (url.pathname === '/destroy') {
+      const container = getContainerDO()
+      await container.destroy()
       await sleep(1000)
       return Response.json(await container.getState())
     }
