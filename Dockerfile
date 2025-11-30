@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     gnupg \
     unzip \
+    iproute2 \
+    net-tools \
+    iputils-ping \
     && rm -rf /var/lib/apt/lists/*
 
 # Add cloudflare gpg key
@@ -64,28 +67,30 @@ RUN ssh-keygen -A
 RUN echo '#!/bin/bash\n\
 set -e\n\
 \n\
-# Start sshd\n\
 mkdir -p /var/run/sshd\n\
 /usr/sbin/sshd\n\
 \n\
-# Start bun server in background\n\
 echo "Starting Bun server..."\n\
 su - user -c "bun /home/user/hello-server.js" &\n\
 \n\
-# Run cloudflared tunnel\n\
-if [ -z "$CF_TUNNEL" ]; then\n\
-    echo "Error: CF_TUNNEL environment variable is not set"\n\
+if [ -z "$CF_TUNNEL" ] || [ -z "$CONTAINER_IP" ]; then\n\
+    echo "Error: CF_TUNNEL or CONTAINER_IP environment var not set"\n\
     exit 1\n\
 fi\n\
 \n\
-exec cloudflared tunnel run --protocol http2 --token $CF_TUNNEL\n\
+echo "ip addr add "${CONTAINER_IP}/24" dev lo"\n\
+sudo ip addr add "${CONTAINER_IP}/24" dev lo || echo "Failed to add $CONTAINER_IP address to lo loopback interface"\n\
+\n\
+echo "cloudflared tunnel --edge-bind-address $CONTAINER_IP run --protocol http2 --token [CF_TUNNEL]"\n\
+exec cloudflared tunnel --edge-bind-address $CONTAINER_IP run --protocol http2 --token $CF_TUNNEL\n\
 ' > /entrypoint.sh && chmod +x /entrypoint.sh
 
 # Expose SSH and Bun server ports
 EXPOSE 22 3000
 
-# Set environment variable for tunnel token (will be provided at runtime)
+# Set environment variables for tunnel token and container IP (to be provided at runtime)
 ENV CF_TUNNEL=""
+ENV CONTAINER_IP=""
 
 # Set terminal type
 ENV TERM=xterm-256color

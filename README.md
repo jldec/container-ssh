@@ -32,9 +32,10 @@ Since ssh host keys are generated during the docker build, in the absence of bui
 - Connect using `ssh container-ssh` after starting the container
 - Browse to https://container-ssh.{your-subdomain}.workers.dev/
   ```
-  /hello  starts container and forwards request to bun
-  /status checks container state
-  /stop   shuts down the container
+  /hello   starts container and forwards request to bun
+  /status  checks container state
+  /stop    shuts down the container
+  /destroy forecibly shuts down the container
   ```
 - Turn on Cloudflare Access to protect the public endpoit from abuse. The container should run for at least 20 minutes.
 
