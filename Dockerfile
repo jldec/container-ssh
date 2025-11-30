@@ -78,7 +78,7 @@ if [ -z "$CF_TUNNEL" ]; then\n\
     exit 1\n\
 fi\n\
 \n\
-exec cloudflared tunnel run --token $CF_TUNNEL\n\
+exec cloudflared tunnel run --protocol http2 --token $CF_TUNNEL\n\
 ' > /entrypoint.sh && chmod +x /entrypoint.sh
 
 # Expose SSH and Bun server ports
